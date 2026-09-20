@@ -11,15 +11,17 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="<%= currentUser ? 'has-sidebar' : '' %>">
+<% const user = typeof currentUser !== 'undefined' ? currentUser : null; %>
 
-  <%- include('partials/navbar') %>
+<body class="<%= user ? 'has-sidebar' : '' %>">
 
-  <% if (currentUser) { %>
+<%- include('partials/navbar') %>
+
+<% if (user) { %>
     <%- include('partials/sidebar') %>
-  <% } %>
+<% } %>
 
-  <main class="main-content <%= currentUser ? 'with-sidebar' : '' %>">
+<main class="main-content <%= user ? 'with-sidebar' : '' %>">
     <%- include('partials/flash') %>
     <%- body %>
   </main>

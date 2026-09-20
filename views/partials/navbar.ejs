@@ -1,3 +1,4 @@
+<% const user = typeof currentUser !== 'undefined' ? currentUser : null; %>
 <nav class="navbar" id="main-navbar">
   <div class="navbar-brand">
     <a href="/" class="navbar-logo">
@@ -10,15 +11,15 @@
   </div>
 
   <div class="navbar-menu" id="navbar-menu">
-    <% if (currentUser) { %>
+    <% if (user) { %>
       <div class="navbar-user">
         <div class="user-avatar">
           <i class="fas fa-user-circle"></i>
         </div>
         <div class="user-info">
-          <span class="user-name"><%= currentUser.name %></span>
-          <span class="user-role badge badge-<%= currentUser.role === 'admin' ? 'admin' : 'student' %>">
-            <%= currentUser.role === 'admin' ? 'Admin' : 'Student' %>
+          <span class="user-name"><%= user.name %></span>
+          <span class="user-role badge badge-<%= user.role === 'admin' ? 'admin' : 'student' %>">
+            <%= user.role === 'admin' ? 'Admin' : 'Student' %>
           </span>
         </div>
         <a href="/logout" class="btn btn-logout" id="logout-btn">
