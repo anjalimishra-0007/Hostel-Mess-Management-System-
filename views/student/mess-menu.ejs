@@ -1,0 +1,46 @@
+<section class="page-section">
+  <div class="page-header">
+    <h1><i class="fas fa-utensils"></i> Weekly Mess Menu</h1>
+    <p class="page-subtitle">View this week's meal schedule</p>
+  </div>
+
+  <div class="mess-menu-display">
+    <% days.forEach(day => { %>
+      <div class="menu-day-card glass-card">
+        <h3 class="menu-day-title">
+          <i class="fas fa-calendar-day"></i> <%= day %>
+        </h3>
+        <div class="menu-meals-display">
+          <div class="meal-item">
+            <div class="meal-icon"><i class="fas fa-coffee"></i></div>
+            <div class="meal-info">
+              <span class="meal-type">Breakfast</span>
+              <span class="meal-menu"><%= menuByDay[day].breakfast || 'Not updated' %></span>
+            </div>
+          </div>
+          <div class="meal-item">
+            <div class="meal-icon"><i class="fas fa-sun"></i></div>
+            <div class="meal-info">
+              <span class="meal-type">Lunch</span>
+              <span class="meal-menu"><%= menuByDay[day].lunch || 'Not updated' %></span>
+            </div>
+          </div>
+          <div class="meal-item">
+            <div class="meal-icon"><i class="fas fa-cookie-bite"></i></div>
+            <div class="meal-info">
+              <span class="meal-type">Snacks</span>
+              <span class="meal-menu"><%= menuByDay[day].snacks || 'Not updated' %></span>
+            </div>
+          </div>
+          <div class="meal-item">
+            <div class="meal-icon"><i class="fas fa-moon"></i></div>
+            <div class="meal-info">
+              <span class="meal-type">Dinner</span>
+              <span class="meal-menu"><%= menuByDay[day].dinner || 'Not updated' %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</section>

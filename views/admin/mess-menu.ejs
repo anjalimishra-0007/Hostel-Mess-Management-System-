@@ -1,0 +1,56 @@
+<section class="page-section">
+  <div class="page-header">
+    <h1><i class="fas fa-utensils"></i> Mess Menu Management</h1>
+    <p class="page-subtitle">Publish and update the weekly mess menu</p>
+  </div>
+
+  <div class="section-card glass-card">
+    <form action="/admin/mess-menu" method="POST" id="mess-menu-form">
+      <div class="mess-menu-grid">
+        <% days.forEach(day => { %>
+          <div class="menu-day-card">
+            <h3 class="menu-day-title">
+              <i class="fas fa-calendar-day"></i> <%= day %>
+            </h3>
+            <div class="menu-meals">
+              <div class="form-group">
+                <label for="<%= day %>_breakfast">
+                  <i class="fas fa-coffee"></i> Breakfast
+                </label>
+                <input type="text" id="<%= day %>_breakfast" name="<%= day %>_breakfast"
+                  value="<%= menuByDay[day].breakfast || '' %>" placeholder="e.g., Poha, Tea, Toast">
+              </div>
+              <div class="form-group">
+                <label for="<%= day %>_lunch">
+                  <i class="fas fa-sun"></i> Lunch
+                </label>
+                <input type="text" id="<%= day %>_lunch" name="<%= day %>_lunch"
+                  value="<%= menuByDay[day].lunch || '' %>" placeholder="e.g., Dal, Rice, Roti, Sabzi">
+              </div>
+              <div class="form-group">
+                <label for="<%= day %>_snacks">
+                  <i class="fas fa-cookie-bite"></i> Snacks
+                </label>
+                <input type="text" id="<%= day %>_snacks" name="<%= day %>_snacks"
+                  value="<%= menuByDay[day].snacks || '' %>" placeholder="e.g., Samosa, Chai">
+              </div>
+              <div class="form-group">
+                <label for="<%= day %>_dinner">
+                  <i class="fas fa-moon"></i> Dinner
+                </label>
+                <input type="text" id="<%= day %>_dinner" name="<%= day %>_dinner"
+                  value="<%= menuByDay[day].dinner || '' %>" placeholder="e.g., Paneer, Naan, Salad">
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-lg" id="save-menu-btn">
+          <i class="fas fa-save"></i> Save Menu
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

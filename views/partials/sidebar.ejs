@@ -1,0 +1,85 @@
+<% if (currentUser) { %>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h3><%= currentUser.role === 'admin' ? 'Admin Panel' : 'Student Portal' %></h3>
+  </div>
+
+  <nav class="sidebar-nav">
+    <% if (currentUser.role === 'admin') { %>
+      <a href="/admin/dashboard" class="sidebar-link" id="nav-admin-dashboard">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+      </a>
+      <div class="sidebar-divider"></div>
+      <p class="sidebar-label">Room Management</p>
+      <a href="/admin/blocks" class="sidebar-link" id="nav-admin-blocks">
+        <i class="fas fa-cubes"></i>
+        <span>Blocks</span>
+      </a>
+      <a href="/admin/rooms" class="sidebar-link" id="nav-admin-rooms">
+        <i class="fas fa-door-open"></i>
+        <span>Rooms</span>
+      </a>
+      <a href="/admin/requests" class="sidebar-link" id="nav-admin-requests">
+        <i class="fas fa-inbox"></i>
+        <span>Room Requests</span>
+      </a>
+      <a href="/admin/room-changes" class="sidebar-link" id="nav-admin-room-changes">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Room Changes</span>
+      </a>
+      <a href="/admin/maintenance" class="sidebar-link" id="nav-admin-maintenance">
+        <i class="fas fa-wrench"></i>
+        <span>Maintenance</span>
+      </a>
+      <div class="sidebar-divider"></div>
+      <p class="sidebar-label">Mess Management</p>
+      <a href="/admin/mess-menu" class="sidebar-link" id="nav-admin-mess">
+        <i class="fas fa-utensils"></i>
+        <span>Mess Menu</span>
+      </a>
+      <a href="/admin/feedback" class="sidebar-link" id="nav-admin-feedback">
+        <i class="fas fa-star"></i>
+        <span>Feedback</span>
+      </a>
+    <% } else { %>
+      <a href="/student/dashboard" class="sidebar-link" id="nav-student-dashboard">
+        <i class="fas fa-home"></i>
+        <span>Dashboard</span>
+      </a>
+      <div class="sidebar-divider"></div>
+      <p class="sidebar-label">Room</p>
+      <a href="/student/my-room" class="sidebar-link" id="nav-student-room">
+        <i class="fas fa-bed"></i>
+        <span>My Room</span>
+      </a>
+      <a href="/student/request-room" class="sidebar-link" id="nav-student-request">
+        <i class="fas fa-plus-circle"></i>
+        <span>Request Room</span>
+      </a>
+      <a href="/student/room-change" class="sidebar-link" id="nav-student-change">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Room Change</span>
+      </a>
+      <a href="/student/maintenance" class="sidebar-link" id="nav-student-maintenance">
+        <i class="fas fa-tools"></i>
+        <span>Maintenance</span>
+      </a>
+      <div class="sidebar-divider"></div>
+      <p class="sidebar-label">Mess</p>
+      <a href="/student/mess-menu" class="sidebar-link" id="nav-student-mess">
+        <i class="fas fa-utensils"></i>
+        <span>Mess Menu</span>
+      </a>
+      <a href="/student/feedback" class="sidebar-link" id="nav-student-feedback">
+        <i class="fas fa-comment-dots"></i>
+        <span>Feedback</span>
+      </a>
+    <% } %>
+  </nav>
+
+  <button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Toggle sidebar">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+</aside>
+<% } %>

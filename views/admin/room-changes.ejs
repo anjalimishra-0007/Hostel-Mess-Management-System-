@@ -1,0 +1,111 @@
+<section class="page-section">
+  <div class="page-header">
+    <h1><i class="fas fa-exchange-alt"></i> Room Change Requests</h1>
+    <p class="page-subtitle">Review and manage room transfer requests</p>
+  </div>
+
+  <% if (requests.length === 0) { %>
+    <div class="section-card glass-card">
+      <div class="empty-state">
+        <i class="fas fa-exchange-alt"></i>
+        <p>No room change requests yet.</p>
+      </div>
+    </div>
+  <% } else { %>
+    <% const pendingReqs = requests.filter(r => r.status === 'pending'); %>
+    <% const processedReqs = requests.filter(r => r.status !== 'pending'); %>
+
+    <% if (pendingReqs.length > 0) { %>
+      <div class="section-card glass-card">
+        <div class="section-header">
+          <h2><i class="fas fa-clock"></i> Pending (<%= pendingReqs.length %>)</h2>
+        </div>
+        <div class="requests-list">
+          <% pendingReqs.forEach(req => { %>
+            <div class="request-card pending">
+              <div class="request-info">
+                <div class="request-student">
+                  <i class="fas fa-user-graduate"></i>
+                  <div>
+                    <strong><%= req.student ? req.student.name : 'Unknown' %></strong>
+                    <span class="text-muted"><%= req.student ? req.student.email : '' %></span>
+                  </div>
+                </div>
+                <div class="request-details">
+                  <span><i class="fas fa-door-open"></i> Current: <%= req.currentRoom && req.currentRoom.block ? req.currentRoom.block.name + ' - ' + req.currentRoom.roomNumber : 'N/A' %></span>
+                  <% if (req.preferredBlock) { %>
+                    <span><i class="fas fa-building"></i> Preferred Block: <%= req.preferredBlock.name %></span>
+                  <% } %>
+                  <% if (req.preferredRoomType) { %>
+                    <span><i class="fas fa-bed"></i> Preferred Type: <%= req.preferredRoomType %></span>
+                  <% } %>
+                </div>
+                <p class="request-description"><strong>Reason:</strong> <%= req.reason %></p>
+              </div>
+              <div class="request-actions">
+                <form action="/admin/room-changes/<%= req._id %>/approve" method="POST" class="inline-form">
+                  <div class="form-group">
+                    <select name="roomId" required class="form-select-sm">
+                      <option value="">Assign new room...</option>
+                      <% availableRooms.forEach(room => { %>
+                        <option value="<%= room._id %>">
+                          <%= room.block ? room.block.name : '' %> - <%= room.roomNumber %> (<%= room.type %>, <%= room.capacity - room.occupants.length %> beds free)
+                        </option>
+                      <% }) %>
+                    </select>
+                  </div>
+                  <input type="text" name="adminRemarks" placeholder="Remarks" class="form-input-sm">
+                  <button type="submit" class="btn btn-success btn-sm">
+                    <i class="fas fa-check"></i> Approve
+                  </button>
+                </form>
+                <form action="/admin/room-changes/<%= req._id %>/reject" method="POST" class="inline-form">
+                  <input type="text" name="adminRemarks" placeholder="Reason" class="form-input-sm">
+                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Reject this request?')">
+                    <i class="fas fa-times"></i> Reject
+                  </button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+
+    <% if (processedReqs.length > 0) { %>
+      <div class="section-card glass-card">
+        <div class="section-header">
+          <h2><i class="fas fa-history"></i> History (<%= processedReqs.length %>)</h2>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>From Room</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>New Room</th>
+                <th>Remarks</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% processedReqs.forEach(req => { %>
+                <tr>
+                  <td><%= req.student ? req.student.name : 'Unknown' %></td>
+                  <td><%= req.currentRoom && req.currentRoom.block ? req.currentRoom.block.name + ' - ' + req.currentRoom.roomNumber : 'N/A' %></td>
+                  <td class="truncate"><%= req.reason %></td>
+                  <td><span class="badge badge-<%= req.status %>"><%= req.status %></span></td>
+                  <td><%= req.newRoom && req.newRoom.block ? req.newRoom.block.name + ' - ' + req.newRoom.roomNumber : '-' %></td>
+                  <td><%= req.adminRemarks || '-' %></td>
+                  <td><%= new Date(req.createdAt).toLocaleDateString('en-IN') %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% } %>
+  <% } %>
+</section>

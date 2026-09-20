@@ -1,0 +1,136 @@
+<section class="dashboard-page">
+  <div class="page-header">
+    <h1><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
+    <p class="page-subtitle">Overview of hostel operations</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card stat-primary">
+      <div class="stat-icon"><i class="fas fa-users"></i></div>
+      <div class="stat-info">
+        <span class="stat-value"><%= totalStudents %></span>
+        <span class="stat-label">Total Students</span>
+      </div>
+    </div>
+    <div class="stat-card stat-success">
+      <div class="stat-icon"><i class="fas fa-bed"></i></div>
+      <div class="stat-info">
+        <span class="stat-value"><%= occupiedBeds %>/<%= totalBeds %></span>
+        <span class="stat-label">Beds Occupied</span>
+      </div>
+    </div>
+    <div class="stat-card stat-info">
+      <div class="stat-icon"><i class="fas fa-door-open"></i></div>
+      <div class="stat-info">
+        <span class="stat-value"><%= availableBeds %></span>
+        <span class="stat-label">Available Beds</span>
+      </div>
+    </div>
+    <div class="stat-card stat-warning">
+      <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+      <div class="stat-info">
+        <span class="stat-value"><%= occupancyRate %>%</span>
+        <span class="stat-label">Occupancy Rate</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Actions -->
+  <div class="stats-grid stats-secondary">
+    <div class="stat-card stat-pending">
+      <div class="stat-icon"><i class="fas fa-inbox"></i></div>
+      <div class="stat-info">
+        <span class="stat-value"><%= pendingRoomRequests %></span>
+        <span class="stat-label">Pending Room Requests</span>
+      </div>
+      <a href="/admin/requests" class="stat-action">View <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="stat-card stat-pending">
+      <div class="stat-icon"><i class="fas fa-wrench"></i></div>
+      <div class="stat-info">
+        <span class="stat-value"><%= pendingMaintenance %></span>
+        <span class="stat-label">Active Maintenance</span>
+      </div>
+      <a href="/admin/maintenance" class="stat-action">View <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="stat-card stat-pending">
+      <div class="stat-icon"><i class="fas fa-exchange-alt"></i></div>
+      <div class="stat-info">
+        <span class="stat-value"><%= pendingRoomChanges %></span>
+        <span class="stat-label">Room Change Requests</span>
+      </div>
+      <a href="/admin/room-changes" class="stat-action">View <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- Block-wise Stats -->
+  <div class="section-card glass-card">
+    <div class="section-header">
+      <h2><i class="fas fa-cubes"></i> Block-wise Occupancy</h2>
+    </div>
+    <% if (blockStats.length === 0) { %>
+      <div class="empty-state">
+        <i class="fas fa-cubes"></i>
+        <p>No blocks created yet. <a href="/admin/blocks">Create blocks</a> to get started.</p>
+      </div>
+    <% } else { %>
+      <div class="table-responsive">
+        <table class="data-table" id="block-stats-table">
+          <thead>
+            <tr>
+              <th>Block</th>
+              <th>Type</th>
+              <th>Rooms</th>
+              <th>Total Beds</th>
+              <th>Occupied</th>
+              <th>Available</th>
+              <th>Occupancy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% blockStats.forEach(block => { %>
+              <tr>
+                <td><strong><%= block.name %></strong></td>
+                <td><span class="badge badge-<%= block.type %>"><%= block.type %></span></td>
+                <td><%= block.totalRooms %></td>
+                <td><%= block.totalBeds %></td>
+                <td><%= block.occupiedBeds %></td>
+                <td><%= block.availableBeds %></td>
+                <td>
+                  <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: <%= block.occupancyRate %>%"></div>
+                    <span class="progress-label"><%= block.occupancyRate %>%</span>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+    <div class="actions-grid">
+      <a href="/admin/blocks" class="action-card">
+        <i class="fas fa-plus-circle"></i>
+        <span>Add Block</span>
+      </a>
+      <a href="/admin/rooms" class="action-card">
+        <i class="fas fa-door-open"></i>
+        <span>Add Room</span>
+      </a>
+      <a href="/admin/mess-menu" class="action-card">
+        <i class="fas fa-utensils"></i>
+        <span>Update Menu</span>
+      </a>
+      <a href="/admin/feedback" class="action-card">
+        <i class="fas fa-star"></i>
+        <span>View Feedback</span>
+      </a>
+    </div>
+  </div>
+</section>

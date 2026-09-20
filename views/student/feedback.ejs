@@ -1,0 +1,92 @@
+<section class="page-section">
+  <div class="page-header">
+    <h1><i class="fas fa-comment-dots"></i> Meal Feedback</h1>
+    <p class="page-subtitle">Rate meals and share your feedback</p>
+  </div>
+
+  <!-- Submit Feedback -->
+  <div class="section-card glass-card">
+    <div class="section-header">
+      <h2><i class="fas fa-star"></i> Submit Feedback</h2>
+    </div>
+    <form action="/student/feedback" method="POST" id="feedback-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="day">
+            <i class="fas fa-calendar-day"></i> Day *
+          </label>
+          <select id="day" name="day" required>
+            <option value="">Select day</option>
+            <% days.forEach(d => { %>
+              <option value="<%= d %>"><%= d %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="mealType">
+            <i class="fas fa-utensils"></i> Meal *
+          </label>
+          <select id="mealType" name="mealType" required>
+            <option value="">Select meal</option>
+            <option value="breakfast">☕ Breakfast</option>
+            <option value="lunch">🍱 Lunch</option>
+            <option value="snacks">🍪 Snacks</option>
+            <option value="dinner">🍽️ Dinner</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="rating">
+            <i class="fas fa-star"></i> Rating *
+          </label>
+          <div class="star-rating-input" id="star-rating">
+            <input type="hidden" name="rating" id="rating-value" required>
+            <i class="fas fa-star star-btn" data-value="1"></i>
+            <i class="fas fa-star star-btn" data-value="2"></i>
+            <i class="fas fa-star star-btn" data-value="3"></i>
+            <i class="fas fa-star star-btn" data-value="4"></i>
+            <i class="fas fa-star star-btn" data-value="5"></i>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="comment">
+          <i class="fas fa-pen"></i> Comment (optional)
+        </label>
+        <textarea id="comment" name="comment" rows="2" placeholder="Share your thoughts about the meal..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" id="submit-feedback">
+        <i class="fas fa-paper-plane"></i> Submit Feedback
+      </button>
+    </form>
+  </div>
+
+  <!-- My Feedback History -->
+  <% if (myFeedback.length > 0) { %>
+    <div class="section-card glass-card">
+      <div class="section-header">
+        <h2><i class="fas fa-history"></i> My Feedback</h2>
+      </div>
+      <div class="feedback-list">
+        <% myFeedback.forEach(fb => { %>
+          <div class="feedback-card">
+            <div class="feedback-header">
+              <div class="feedback-meta">
+                <span class="badge badge-meal"><%= fb.mealType %></span>
+                <span><%= fb.day %></span>
+              </div>
+              <span class="text-muted text-sm"><%= new Date(fb.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) %></span>
+            </div>
+            <div class="feedback-rating">
+              <% for (let i = 1; i <= 5; i++) { %>
+                <i class="fas fa-star <%= i <= fb.rating ? 'star-filled' : 'star-empty' %>"></i>
+              <% } %>
+            </div>
+            <% if (fb.comment) { %>
+              <p class="feedback-comment"><%= fb.comment %></p>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+</section>

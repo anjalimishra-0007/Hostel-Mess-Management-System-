@@ -1,0 +1,160 @@
+<section class="page-section">
+  <div class="page-header">
+    <h1><i class="fas fa-door-open"></i> Manage Rooms</h1>
+    <p class="page-subtitle">Create and manage hostel rooms</p>
+  </div>
+
+  <!-- Create Room Form -->
+  <div class="section-card glass-card">
+    <div class="section-header">
+      <h2><i class="fas fa-plus-circle"></i> Create New Room</h2>
+    </div>
+    <% if (blocks.length === 0) { %>
+      <div class="empty-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>No blocks available. <a href="/admin/blocks">Create a block</a> first.</p>
+      </div>
+    <% } else { %>
+      <form action="/admin/rooms" method="POST" class="inline-form" id="create-room-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="room-number">Room Number</label>
+            <input type="text" id="room-number" name="roomNumber" placeholder="e.g., 101" required>
+          </div>
+          <div class="form-group">
+            <label for="room-block">Block</label>
+            <select id="room-block" name="block" required>
+              <option value="">Select block</option>
+              <% blocks.forEach(block => { %>
+                <option value="<%= block._id %>"><%= block.name %> (<%= block.type %>)</option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="room-type">Type</label>
+            <select id="room-type" name="type" required>
+              <option value="single">Single (1 bed)</option>
+              <option value="double" selected>Double (2 beds)</option>
+              <option value="triple">Triple (3 beds)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="room-floor">Floor</label>
+            <input type="number" id="room-floor" name="floor" value="1" min="1" max="20">
+          </div>
+          <div class="form-group form-action">
+            <button type="submit" class="btn btn-primary" id="create-room-btn">
+              <i class="fas fa-plus"></i> Create Room
+            </button>
+          </div>
+        </div>
+      </form>
+    <% } %>
+  </div>
+
+  <!-- Filters -->
+  <div class="section-card glass-card">
+    <div class="section-header">
+      <h2><i class="fas fa-filter"></i> Filters</h2>
+    </div>
+    <form action="/admin/rooms" method="GET" class="inline-form" id="rooms-filter-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="filter-block">Block</label>
+          <select id="filter-block" name="block">
+            <option value="">All Blocks</option>
+            <% blocks.forEach(block => { %>
+              <option value="<%= block._id %>" <%= filters.block === block._id.toString() ? 'selected' : '' %>><%= block.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filter-status">Status</label>
+          <select id="filter-status" name="status">
+            <option value="">All</option>
+            <option value="available" <%= filters.status === 'available' ? 'selected' : '' %>>Available</option>
+            <option value="partially_occupied" <%= filters.status === 'partially_occupied' ? 'selected' : '' %>>Partially Occupied</option>
+            <option value="full" <%= filters.status === 'full' ? 'selected' : '' %>>Full</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filter-type">Type</label>
+          <select id="filter-type" name="type">
+            <option value="">All</option>
+            <option value="single" <%= filters.type === 'single' ? 'selected' : '' %>>Single</option>
+            <option value="double" <%= filters.type === 'double' ? 'selected' : '' %>>Double</option>
+            <option value="triple" <%= filters.type === 'triple' ? 'selected' : '' %>>Triple</option>
+          </select>
+        </div>
+        <div class="form-group form-action">
+          <button type="submit" class="btn btn-secondary" id="apply-filter-btn">
+            <i class="fas fa-search"></i> Apply
+          </button>
+          <a href="/admin/rooms" class="btn btn-ghost">Clear</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Rooms List -->
+  <div class="section-card glass-card">
+    <div class="section-header">
+      <h2><i class="fas fa-list"></i> Rooms (<%= rooms.length %>)</h2>
+    </div>
+    <% if (rooms.length === 0) { %>
+      <div class="empty-state">
+        <i class="fas fa-door-open"></i>
+        <p>No rooms found. Create rooms using the form above.</p>
+      </div>
+    <% } else { %>
+      <div class="table-responsive">
+        <table class="data-table" id="rooms-table">
+          <thead>
+            <tr>
+              <th>Room #</th>
+              <th>Block</th>
+              <th>Type</th>
+              <th>Floor</th>
+              <th>Occupancy</th>
+              <th>Status</th>
+              <th>Occupants</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% rooms.forEach(room => { %>
+              <tr>
+                <td><strong><%= room.roomNumber %></strong></td>
+                <td><%= room.block ? room.block.name : 'N/A' %></td>
+                <td><span class="badge badge-room-type"><%= room.type %></span></td>
+                <td><%= room.floor %></td>
+                <td><%= room.occupants.length %>/<%= room.capacity %></td>
+                <td>
+                  <span class="badge badge-status-<%= room.status %>">
+                    <%= room.status.replace('_', ' ') %>
+                  </span>
+                </td>
+                <td>
+                  <% if (room.occupants.length > 0) { %>
+                    <% room.occupants.forEach(occ => { %>
+                      <span class="occupant-tag"><%= occ.name %></span>
+                    <% }) %>
+                  <% } else { %>
+                    <span class="text-muted">Empty</span>
+                  <% } %>
+                </td>
+                <td>
+                  <form action="/admin/rooms/<%= room._id %>/delete" method="POST" class="inline-form" onsubmit="return confirm('Delete room <%= room.roomNumber %>?')">
+                    <button type="submit" class="btn btn-danger btn-sm" <%= room.occupants.length > 0 ? 'disabled title=\"Remove occupants first\"' : '' %>>
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</section>

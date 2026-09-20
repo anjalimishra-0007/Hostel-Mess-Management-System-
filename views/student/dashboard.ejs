@@ -1,0 +1,102 @@
+<section class="dashboard-page">
+  <div class="page-header">
+    <h1><i class="fas fa-home"></i> Welcome, <%= currentUser.name %>!</h1>
+    <p class="page-subtitle">Your student dashboard</p>
+  </div>
+
+  <!-- Room Status -->
+  <div class="stats-grid">
+    <div class="stat-card stat-<%= currentRoom ? 'success' : 'warning' %>">
+      <div class="stat-icon"><i class="fas fa-bed"></i></div>
+      <div class="stat-info">
+        <span class="stat-value"><%= currentRoom ? currentRoom.block.name + ' - ' + currentRoom.roomNumber : 'Not Allocated' %></span>
+        <span class="stat-label">Current Room</span>
+      </div>
+      <% if (currentRoom) { %>
+        <a href="/student/my-room" class="stat-action">View Details <i class="fas fa-arrow-right"></i></a>
+      <% } else { %>
+        <a href="/student/request-room" class="stat-action">Request Room <i class="fas fa-arrow-right"></i></a>
+      <% } %>
+    </div>
+    <div class="stat-card stat-info">
+      <div class="stat-icon"><i class="fas fa-inbox"></i></div>
+      <div class="stat-info">
+        <span class="stat-value"><%= recentRoomRequest ? recentRoomRequest.status : 'None' %></span>
+        <span class="stat-label">Room Request Status</span>
+      </div>
+    </div>
+    <div class="stat-card stat-<%= pendingMaintenance > 0 ? 'pending' : 'primary' %>">
+      <div class="stat-icon"><i class="fas fa-wrench"></i></div>
+      <div class="stat-info">
+        <span class="stat-value"><%= pendingMaintenance %></span>
+        <span class="stat-label">Active Maintenance</span>
+      </div>
+      <a href="/student/maintenance" class="stat-action">View <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+    <div class="actions-grid">
+      <% if (!currentRoom) { %>
+        <a href="/student/request-room" class="action-card">
+          <i class="fas fa-plus-circle"></i>
+          <span>Request Room</span>
+        </a>
+      <% } else { %>
+        <a href="/student/my-room" class="action-card">
+          <i class="fas fa-bed"></i>
+          <span>My Room</span>
+        </a>
+        <a href="/student/room-change" class="action-card">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Change Room</span>
+        </a>
+        <a href="/student/maintenance" class="action-card">
+          <i class="fas fa-tools"></i>
+          <span>Maintenance</span>
+        </a>
+      <% } %>
+      <a href="/student/mess-menu" class="action-card">
+        <i class="fas fa-utensils"></i>
+        <span>Mess Menu</span>
+      </a>
+      <a href="/student/feedback" class="action-card">
+        <i class="fas fa-star"></i>
+        <span>Give Feedback</span>
+      </a>
+    </div>
+  </div>
+
+  <% if (currentRoom) { %>
+    <!-- Room Info Card -->
+    <div class="section-card glass-card">
+      <div class="section-header">
+        <h2><i class="fas fa-info-circle"></i> Room Details</h2>
+      </div>
+      <div class="room-info-display">
+        <div class="room-info-item">
+          <span class="label">Block</span>
+          <span class="value"><%= currentRoom.block.name %></span>
+        </div>
+        <div class="room-info-item">
+          <span class="label">Room Number</span>
+          <span class="value"><%= currentRoom.roomNumber %></span>
+        </div>
+        <div class="room-info-item">
+          <span class="label">Type</span>
+          <span class="value badge badge-room-type"><%= currentRoom.type %></span>
+        </div>
+        <div class="room-info-item">
+          <span class="label">Floor</span>
+          <span class="value"><%= currentRoom.floor %></span>
+        </div>
+        <div class="room-info-item">
+          <span class="label">Occupants</span>
+          <span class="value"><%= currentRoom.occupants.length %>/<%= currentRoom.capacity %></span>
+        </div>
+      </div>
+    </div>
+  <% } %>
+</section>

@@ -1,0 +1,64 @@
+<section class="page-section">
+  <div class="page-header">
+    <h1><i class="fas fa-wrench"></i> Maintenance Requests</h1>
+    <p class="page-subtitle">Manage maintenance and repair tickets</p>
+  </div>
+
+  <% if (requests.length === 0) { %>
+    <div class="section-card glass-card">
+      <div class="empty-state">
+        <i class="fas fa-wrench"></i>
+        <p>No maintenance requests yet.</p>
+      </div>
+    </div>
+  <% } else { %>
+    <div class="section-card glass-card">
+      <div class="section-header">
+        <h2><i class="fas fa-list"></i> All Requests (<%= requests.length %>)</h2>
+      </div>
+      <div class="requests-list">
+        <% requests.forEach(req => { %>
+          <div class="request-card maintenance-<%= req.status %>">
+            <div class="request-info">
+              <div class="request-student">
+                <i class="fas fa-user-graduate"></i>
+                <div>
+                  <strong><%= req.student ? req.student.name : 'Unknown' %></strong>
+                  <span class="text-muted"><%= req.student ? req.student.email : '' %></span>
+                </div>
+              </div>
+              <div class="request-details">
+                <span><i class="fas fa-door-open"></i> Room: <%= req.room && req.room.block ? req.room.block.name + ' - ' + req.room.roomNumber : 'N/A' %></span>
+                <span class="badge badge-category-<%= req.category %>">
+                  <i class="fas fa-<%= req.category === 'plumbing' ? 'faucet' : req.category === 'electrical' ? 'bolt' : req.category === 'cleaning' ? 'broom' : req.category === 'furniture' ? 'couch' : 'ellipsis-h' %>"></i>
+                  <%= req.category %>
+                </span>
+                <span class="badge badge-<%= req.status %>"><%= req.status.replace('_', ' ') %></span>
+              </div>
+              <p class="request-description"><%= req.description %></p>
+              <% if (req.adminRemarks) { %>
+                <p class="admin-remarks"><i class="fas fa-comment"></i> Admin: <%= req.adminRemarks %></p>
+              <% } %>
+              <span class="text-muted text-sm"><i class="fas fa-calendar"></i> <%= new Date(req.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+            </div>
+            <div class="request-actions">
+              <form action="/admin/maintenance/<%= req._id %>/update" method="POST" class="inline-form">
+                <div class="form-group">
+                  <select name="status" class="form-select-sm" required>
+                    <option value="pending" <%= req.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                    <option value="in_progress" <%= req.status === 'in_progress' ? 'selected' : '' %>>In Progress</option>
+                    <option value="resolved" <%= req.status === 'resolved' ? 'selected' : '' %>>Resolved</option>
+                  </select>
+                </div>
+                <input type="text" name="adminRemarks" placeholder="Remarks" value="<%= req.adminRemarks || '' %>" class="form-input-sm">
+                <button type="submit" class="btn btn-primary btn-sm">
+                  <i class="fas fa-save"></i> Update
+                </button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+</section>

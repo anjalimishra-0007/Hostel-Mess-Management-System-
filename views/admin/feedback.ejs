@@ -1,0 +1,83 @@
+<section class="page-section">
+  <div class="page-header">
+    <h1><i class="fas fa-star"></i> Meal Feedback</h1>
+    <p class="page-subtitle">View student meal ratings and comments</p>
+  </div>
+
+  <!-- Average Ratings -->
+  <% if (avgRatings.length > 0) { %>
+    <div class="section-card glass-card">
+      <div class="section-header">
+        <h2><i class="fas fa-chart-bar"></i> Average Ratings</h2>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Meal</th>
+              <th>Avg Rating</th>
+              <th>Responses</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% avgRatings.forEach(r => { %>
+              <tr>
+                <td><%= r._id.day %></td>
+                <td><span class="badge badge-meal"><%= r._id.mealType %></span></td>
+                <td>
+                  <div class="star-rating-display">
+                    <% for (let i = 1; i <= 5; i++) { %>
+                      <i class="fas fa-star <%= i <= Math.round(r.avgRating) ? 'star-filled' : 'star-empty' %>"></i>
+                    <% } %>
+                    <span><%= r.avgRating.toFixed(1) %></span>
+                  </div>
+                </td>
+                <td><%= r.count %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Recent Feedback -->
+  <div class="section-card glass-card">
+    <div class="section-header">
+      <h2><i class="fas fa-comments"></i> Recent Feedback</h2>
+    </div>
+    <% if (feedback.length === 0) { %>
+      <div class="empty-state">
+        <i class="fas fa-comment-dots"></i>
+        <p>No feedback received yet.</p>
+      </div>
+    <% } else { %>
+      <div class="feedback-list">
+        <% feedback.forEach(fb => { %>
+          <div class="feedback-card">
+            <div class="feedback-header">
+              <div class="feedback-user">
+                <i class="fas fa-user-circle"></i>
+                <strong><%= fb.student ? fb.student.name : 'Unknown' %></strong>
+              </div>
+              <div class="feedback-meta">
+                <span class="badge badge-meal"><%= fb.mealType %></span>
+                <span><%= fb.day %></span>
+              </div>
+            </div>
+            <div class="feedback-rating">
+              <% for (let i = 1; i <= 5; i++) { %>
+                <i class="fas fa-star <%= i <= fb.rating ? 'star-filled' : 'star-empty' %>"></i>
+              <% } %>
+            </div>
+            <% if (fb.comment) { %>
+              <p class="feedback-comment"><%= fb.comment %></p>
+            <% } %>
+            <span class="text-muted text-sm"><%= new Date(fb.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>

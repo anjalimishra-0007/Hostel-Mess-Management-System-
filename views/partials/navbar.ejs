@@ -1,0 +1,36 @@
+<nav class="navbar" id="main-navbar">
+  <div class="navbar-brand">
+    <a href="/" class="navbar-logo">
+      <i class="fas fa-building"></i>
+      <span>HostelHub</span>
+    </a>
+    <button class="navbar-toggle" id="navbar-toggle" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
+
+  <div class="navbar-menu" id="navbar-menu">
+    <% if (currentUser) { %>
+      <div class="navbar-user">
+        <div class="user-avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="user-info">
+          <span class="user-name"><%= currentUser.name %></span>
+          <span class="user-role badge badge-<%= currentUser.role === 'admin' ? 'admin' : 'student' %>">
+            <%= currentUser.role === 'admin' ? 'Admin' : 'Student' %>
+          </span>
+        </div>
+        <a href="/logout" class="btn btn-logout" id="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    <% } else { %>
+      <div class="navbar-auth">
+        <a href="/login" class="btn btn-ghost" id="login-btn">Login</a>
+        <a href="/register" class="btn btn-primary" id="register-btn">Register</a>
+      </div>
+    <% } %>
+  </div>
+</nav>
