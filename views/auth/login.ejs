@@ -7,6 +7,23 @@
         <p>Sign in to your HostelHub account</p>
       </div>
 
+      <!-- 1-Click Quick Demo Login -->
+      <div class="demo-login-box">
+        <span class="demo-login-label"><i class="fas fa-bolt"></i> 1-Click Quick Demo Login</span>
+        <div class="demo-login-buttons">
+          <a href="/quick-login/admin" class="btn btn-demo btn-demo-admin" id="quick-admin-btn">
+            <i class="fas fa-user-shield"></i> Admin Access
+          </a>
+          <a href="/quick-login/student" class="btn btn-demo btn-demo-student" id="quick-student-btn">
+            <i class="fas fa-user-graduate"></i> Student Access
+          </a>
+        </div>
+      </div>
+
+      <div class="auth-divider">
+        <span>or sign in with credentials</span>
+      </div>
+
       <form action="/login" method="POST" class="auth-form" id="login-form">
         <div class="form-group">
           <label for="email">
@@ -29,6 +46,24 @@
           Sign In
         </button>
       </form>
+
+      <!-- Demo Credentials Reference -->
+      <div class="demo-creds-hint">
+        <div class="demo-cred-item" onclick="document.getElementById('email').value='admin@hostel.com';document.getElementById('password').value='password123';" style="cursor: pointer;" title="Click to autofill Admin credentials">
+          <i class="fas fa-shield-alt"></i>
+          <div>
+            <strong>Admin:</strong> <code>admin@hostel.com</code> / <code>password123</code>
+            <span class="autofill-tag">Click to fill</span>
+          </div>
+        </div>
+        <div class="demo-cred-item" onclick="document.getElementById('email').value='aarav@student.com';document.getElementById('password').value='password123';" style="cursor: pointer;" title="Click to autofill Student credentials">
+          <i class="fas fa-user-graduate"></i>
+          <div>
+            <strong>Student:</strong> <code>aarav@student.com</code> / <code>password123</code>
+            <span class="autofill-tag">Click to fill</span>
+          </div>
+        </div>
+      </div>
 
       <div class="auth-footer">
         <p>Don't have an account? <a href="/register">Create one</a></p>

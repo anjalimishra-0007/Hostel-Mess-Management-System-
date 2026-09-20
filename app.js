@@ -30,8 +30,8 @@ app.set('trust proxy', 1);
 if (!MONGODB_URI) {
   console.error('❌ MONGODB_URI is not defined! Please configure MONGODB_URI in your environment variables.');
 } else {
-  mongoose.connect(MONGODB_URI)
-    .then(() => console.log('✅ MongoDB connected successfully'))
+  mongoose.connect(MONGODB_URI, { dbName: 'hostel_management' })
+    .then(() => console.log('✅ MongoDB connected successfully (hostel_management)'))
     .catch(err => console.error('❌ MongoDB connection error:', err.message));
 }
 
@@ -54,13 +54,16 @@ const sessionConfig = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+    maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days persistent login
+    httpOnly: true,
+    sameSite: 'lax'
   }
 };
 
 if (MONGODB_URI) {
   sessionConfig.store = MongoStore.create({
     mongoUrl: MONGODB_URI,
+    dbName: 'hostel_management',
     touchAfter: 24 * 3600 // lazy update session every 24 hours
   });
 }

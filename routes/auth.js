@@ -38,12 +38,13 @@ router.post('/register', async (req, res) => {
     }
 
     // Create user
+    const cleanedStudentId = (role === 'student' && studentId && studentId.trim().length > 0) ? studentId.trim() : undefined;
     const user = new User({
       name,
       email,
       password,
       phone,
-      studentId: role === 'student' ? studentId : undefined,
+      studentId: cleanedStudentId,
       role: role || 'student'
     });
     await user.save();
@@ -115,6 +116,11 @@ router.post('/login', async (req, res) => {
       studentId: user.studentId
     };
 
+    const { rememberMe } = req.body;
+    if (rememberMe === 'on' || rememberMe === 'true' || rememberMe === undefined) {
+      req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30; // 30 days persistent auto-login
+    }
+
     console.log(`[AUTH] Login success: ${user.name} (${user.role})`);
 
     req.session.save((saveErr) => {
@@ -131,6 +137,51 @@ router.post('/login', async (req, res) => {
     return res.redirect('/login');
   }
 });
+
+// ─── GET & POST /quick-login/:role (1-Click Instant Auto-Login) ─────────────
+const handleQuickLogin = async (req, res) => {
+  try {
+    const roleParam = (req.params.role || '').toLowerCase();
+    const isAdmin = roleParam === 'admin' || roleParam === 'warden';
+    const targetEmail = isAdmin ? 'admin@hostel.com' : 'aarav@student.com';
+
+    let user = await User.findOne({ email: targetEmail });
+    if (!user) {
+      user = await User.findOne({ role: isAdmin ? 'admin' : 'student' });
+    }
+
+    if (!user) {
+      req.flash('error', `No ${isAdmin ? 'admin' : 'student'} account found.`);
+      return res.redirect('/login');
+    }
+
+    req.session.user = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      studentId: user.studentId
+    };
+
+    req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30; // 30 days persistent auto-login
+
+    req.session.save((saveErr) => {
+      if (saveErr) console.error('Session save error on quick login:', saveErr);
+      req.flash('success', `Logged in automatically as ${user.name} (${user.role.toUpperCase()})`);
+      if (user.role === 'admin') {
+        return res.redirect('/admin/dashboard');
+      }
+      return res.redirect('/student/dashboard');
+    });
+  } catch (err) {
+    console.error('Quick login error:', err);
+    req.flash('error', 'Automatic login failed. Please sign in manually.');
+    return res.redirect('/login');
+  }
+};
+
+router.get('/quick-login/:role', handleQuickLogin);
+router.post('/quick-login/:role', handleQuickLogin);
 
 // ─── GET /logout ────────────────────────────────────────────────────────────
 router.get('/logout', (req, res) => {

@@ -37,25 +37,29 @@ router.get('/dashboard', async (req, res) => {
     ]);
 
     // Calculate occupancy stats
-    const totalBeds = rooms.reduce((sum, r) => sum + r.capacity, 0);
-    const occupiedBeds = rooms.reduce((sum, r) => sum + r.occupants.length, 0);
-    const availableBeds = totalBeds - occupiedBeds;
+    const totalBeds = rooms.reduce((sum, r) => sum + (r.capacity || 0), 0);
+    const occupiedBeds = rooms.reduce((sum, r) => sum + (Array.isArray(r.occupants) ? r.occupants.length : 0), 0);
+    const availableBeds = Math.max(0, totalBeds - occupiedBeds);
     const occupancyRate = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
 
     // Block-wise stats
     const blocks = await Block.find();
     const blockStats = [];
     for (const block of blocks) {
-      const blockRooms = rooms.filter(r => r.block && r.block._id.toString() === block._id.toString());
-      const bBeds = blockRooms.reduce((s, r) => s + r.capacity, 0);
-      const bOccupied = blockRooms.reduce((s, r) => s + r.occupants.length, 0);
+      const blockRooms = rooms.filter(r => {
+        if (!r.block) return false;
+        const bId = r.block._id ? r.block._id.toString() : r.block.toString();
+        return bId === block._id.toString();
+      });
+      const bBeds = blockRooms.reduce((s, r) => s + (r.capacity || 0), 0);
+      const bOccupied = blockRooms.reduce((s, r) => s + (Array.isArray(r.occupants) ? r.occupants.length : 0), 0);
       blockStats.push({
         name: block.name,
         type: block.type,
         totalRooms: blockRooms.length,
         totalBeds: bBeds,
         occupiedBeds: bOccupied,
-        availableBeds: bBeds - bOccupied,
+        availableBeds: Math.max(0, bBeds - bOccupied),
         occupancyRate: bBeds > 0 ? Math.round((bOccupied / bBeds) * 100) : 0
       });
     }
